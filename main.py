@@ -4,7 +4,7 @@ import pyodbc
 conn = pyodbc.connect(
     'DRIVER={ODBC Driver 17 for SQL Server};'
     'SERVER=SILVIA-LAPTOP;'           # ex: localhost\SQLEXPRESS
-    'DATABASE=P&G Project;'                
+    'DATABASE=Proiect Practica;'                
     'Trusted_Connection=yes;'        # Windows Authentication
 )
 
