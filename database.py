@@ -1,90 +1,102 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Text, DECIMAL, and_
+from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 import urllib.parse
 import warnings
 from sqlalchemy import exc
 
-# (Opțional) Ascunde warning-ul legat de versiunea de SQL Server
 warnings.filterwarnings('ignore', category=exc.SAWarning)
 
-# 1. Construim stringul
+# --- CONEXIUNE ---
 connection_string = (
     "Driver={ODBC Driver 17 for SQL Server};"
-    "Server=SILVIA-LAPTOP;"
+    "Server=ALEX_TUTU;"
     "Database=Proiect Practica;"
     "Trusted_Connection=yes;"
 )
-
-# 2. Codificam URL
 params = urllib.parse.quote_plus(connection_string)
-
-# 3. Construim URL final
 DATABASE_URL = f"mssql+pyodbc:///?odbc_connect={params}"
 
-# Engine si Base
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL, echo=False)
 Base = declarative_base()
 
-# Test connection
-try:
-    with engine.connect() as connection:
-        print("Database connected successfully!")
-except Exception as e:
-    print(f"Error connecting to database: {e}")
+# --- MODELE (Cheat Sheet Prof) ---
 
+class Identifier(Base):
+    __tablename__ = 'Identifiers'
+    identifier_name = Column(String(255), primary_key=True)
+    description = Column(Text)
+    identifier_type = Column(String(255))
 
-# Define the Models
-class Countries(Base):
+class Country(Base):
     __tablename__ = 'Countries'
-    
-    name = Column(String, primary_key=True)
-    iso_code = Column(String, nullable=False)
-    short_code = Column(String, nullable=False)
+    name = Column(String(255), primary_key=True)
+    iso_code = Column(String(255))
+    short_code = Column(String(255))
+    consumer_units = relationship('ConsumerUnit', back_populates='country')
 
-    consumer_units = relationship("ConsumerUnits", back_populates="country")
-
-class ConsumerUnits(Base):
+class ConsumerUnit(Base):
     __tablename__ = 'ConsumerUnits'
-    
-    number_of_consumers = Column(Integer, primary_key = True)
-    country_name = Column(String, ForeignKey('Countries.name'), primary_key=True) 
+    number_of_consumers = Column(Integer, primary_key=True)
+    country_name = Column(String(255), ForeignKey('Countries.name'), primary_key=True)
+    country = relationship('Country', back_populates='consumer_units')
 
-    country = relationship("Countries", back_populates="consumer_units")
+# Relația inversă
+Country.consumer_units = relationship('ConsumerUnit', order_by=ConsumerUnit.number_of_consumers, back_populates='country')
 
-Base.metadata.create_all(engine)
+class Ownership(Base):
+    __tablename__ = 'Ownership'
+    identifier_name = Column(String(255), ForeignKey('Identifiers.identifier_name'), primary_key=True)
+    originator_first_name = Column(String(255))
+    originator_last_name = Column(String(255))
+    user_id_tnumber = Column(String(255), primary_key=True)
+    user_id_intranet = Column(String(255))
+    email = Column(String(255))
+    owner_first_name = Column(String(255))
+    owner_last_name = Column(String(255))
+    identifier = relationship('Identifier')
 
-# Create a new session
-Session = sessionmaker(bind=engine)
-session = Session()
+class Relationship(Base):
+    __tablename__ = 'Relationships'
+    from_identifier_name = Column(String(255), ForeignKey('Identifiers.identifier_name'), primary_key=True)
+    to_identifier_name = Column(String(255), ForeignKey('Identifiers.identifier_name'), primary_key=True)
+    relationship_name = Column(String(255))
+    from_identifier = relationship('Identifier', foreign_keys=[from_identifier_name])
+    to_identifier = relationship('Identifier', foreign_keys=[to_identifier_name])
 
-# Adding sample data
-def add_sample_countries():
-    countries = [
-        # Fix: valorile pentru iso și short_code puse între ghilimele (String)
-        Countries(name='Test4', iso_code='123', short_code='3'),
-        Countries(name='Test5', iso_code='1234', short_code='4'),
-        Countries(name='Test6', iso_code='12345', short_code='5')
-    ]
-    session.add_all(countries)
-    session.commit()
-    print("Sample countries added.")
+class Characteristic(Base):
+    __tablename__ = 'Characteristics'
+    master_name = Column(String(255), primary_key=True)
+    name = Column(String(255), primary_key=True)
+    specifics = Column(String(255))
+    action_required = Column(String(255))
+    report_type = Column(String(255))
+    data_type = Column(String(255))
+    lower_routine_release_limit = Column(DECIMAL(10, 2))
+    lower_limit = Column(DECIMAL(10, 2))
+    lower_target = Column(DECIMAL(10, 2))
+    target = Column(DECIMAL(10, 2))
+    upper_target = Column(DECIMAL(10, 2))
+    upper_limit = Column(DECIMAL(10, 2))
+    upper_routine_release_limit = Column(DECIMAL(10, 2))
+    test_frequency = Column(Integer)
+    precision = Column(Integer)
+    engineering_unit = Column(String(255))
 
-def add_sample_consumerUnits():
-    consumerUnits = [
-        # Fix: le-am atribuit o țară existentă prin Foreign Key
-        ConsumerUnits(number_of_consumers=20, country_name='Test1'),
-        ConsumerUnits(number_of_consumers=15, country_name='Test2'),
-        ConsumerUnits(number_of_consumers=10, country_name='Test3')
-    ]
-    session.add_all(consumerUnits)
-    session.commit()
-    print("Sample consumerUnits added.")
+class IdentifierCharacteristic(Base):
+    __tablename__ = 'IdentifierCharacteristics'
+    identifier_name = Column(String(255), ForeignKey('Identifiers.identifier_name'), primary_key=True)
+    master_name = Column(String(255), ForeignKey('Characteristics.master_name'), primary_key=True)
+    characteristic_name = Column(String(255), ForeignKey('Characteristics.name'), primary_key=True)
+    identifier = relationship('Identifier')
+    characteristic = relationship('Characteristic', primaryjoin="and_(IdentifierCharacteristic.master_name==Characteristic.master_name, IdentifierCharacteristic.characteristic_name==Characteristic.name)")
 
-# Apelează funcțiile corect (odată fiecare)
-add_sample_countries()
-add_sample_consumerUnits()
+# --- CONFIG FASTAPI ---
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Close the session
-session.close()
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
