@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-# Presupunem că ai modelele SQLAlchemy definite în 'database' sau 'models'
 from database import Identifier, get_db 
 from authdb import IdentifierCreate, IdentifierUpdate, IdentifierResponse
 
@@ -12,7 +11,6 @@ async def root():
 
 @app.post("/identifiers/", response_model=IdentifierResponse)
 def create_identifier(identifier: IdentifierCreate, db: Session = Depends(get_db)):
-    # Verifică dacă există deja pentru a evita erori de duplicate primary key
     db_identifier = db.query(Identifier).filter(Identifier.identifier_name == identifier.identifier_name).first()
     if db_identifier:
         raise HTTPException(status_code=400, detail="Identifier already exists")
@@ -66,33 +64,26 @@ from database import Identifier, Ownership, Relationship, IdentifierCharacterist
 
 @app.delete("/identifiers/{identifier_name}")
 def delete_full_identifier(identifier_name: str, db: Session = Depends(get_db)):
-    # 1. Căutăm produsul
     db_item = db.query(Identifier).filter(Identifier.identifier_name == identifier_name).first()
     
     if not db_item:
         raise HTTPException(status_code=404, detail="Produsul nu a fost găsit")
 
     try:
-        # 2. Ștergem legăturile din tabelele secundare (Ordinea contează!)
         
-        # Ștergem din Ownership
         db.query(Ownership).filter(Ownership.identifier_name == identifier_name).delete()
         
-        # Ștergem din Relationships (unde produsul e sursă sau destinație)
         db.query(Relationship).filter(
             (Relationship.from_identifier_name == identifier_name) | 
             (Relationship.to_identifier_name == identifier_name)
         ).delete()
         
-        # Ștergem din IdentifierCharacteristics (legătura cu senzorii)
         db.query(IdentifierCharacteristic).filter(
             IdentifierCharacteristic.identifier_name == identifier_name
         ).delete()
 
-        # 3. În sfârșit, ștergem produsul principal din Identifiers
         db.delete(db_item)
         
-        # 4. Salvăm toate modificările deodată (Atomic Commit)
         db.commit()
         
         return {"message": f"Succes! Produsul {identifier_name} și toate legăturile sale au fost șterse."}
