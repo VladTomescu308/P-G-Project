@@ -6,8 +6,8 @@ import pyodbc
 # Connect to SQL Server using Windows Authentication (SSMS)
 conn = pyodbc.connect(
     'DRIVER={ODBC Driver 17 for SQL Server};'
-    'SERVER=(localdb)\\localhost;'       # ex: localhost\SQLEXPRESS
-    'DATABASE=Schita;'                
+    'SERVER=ALEX_TUTU;'       # ex: localhost\SQLEXPRESS
+    'DATABASE=Proiect Practica;'                
     'Trusted_Connection=yes;'        # Windows Authentication
 )
 
