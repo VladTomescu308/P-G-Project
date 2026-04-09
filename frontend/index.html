@@ -11,10 +11,30 @@
 
     <div class="container">
         <h1>Dashboard Produse 🏭</h1>
-        <p>Apasă butonul de mai jos pentru a cere datele de la API-ul FastAPI.</p>
         
-        <button id="btnIncarca">Încarcă Produsele din Baza de Date</button>
-        
+        <div class="form-section">
+            <h2>Adaugă Produs Nou ➕</h2>
+            <form id="formAdaugare">
+                <div class="form-group">
+                    <label for="numeProdus">Nume Produs (ID Unic): *</label>
+                    <input type="text" id="numeProdus" required placeholder="ex: SAMPON-001">
+                </div>
+                <div class="form-group">
+                    <label for="descriereProdus">Descriere:</label>
+                    <input type="text" id="descriereProdus" placeholder="ex: Șampon Anti-Mătreață 500ml">
+                </div>
+                <div class="form-group">
+                    <label for="tipProdus">Tip Produs:</label>
+                    <input type="text" id="tipProdus" placeholder="ex: Lichid">
+                </div>
+                <button type="submit" class="btn-success">Salvează Produsul în DB</button>
+            </form>
+            <div id="mesajFormular"></div> </div>
+
+        <hr>
+
+        <h2>Inventar Curent</h2>
+        <button id="btnIncarca">Reîncarcă Lista</button>
         <ul id="listaProduse">
             </ul>
     </div>

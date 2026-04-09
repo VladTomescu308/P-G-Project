@@ -34,3 +34,71 @@ li {
     padding: 8px; 
     border-bottom: 1px solid #ddd; 
 }
+
+/* --- Stiluri Noi pentru Formular --- */
+.form-section {
+    background: #fdfdfd;
+    padding: 20px;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group input:focus {
+    border-color: #0056b3;
+    outline: none;
+}
+
+.btn-success {
+    background: #28a745;
+    margin-top: 10px;
+    width: 100%;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+#mesajFormular {
+    margin-top: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.mesaj-succes { color: #28a745; }
+.mesaj-eroare { color: #dc3545; }
+
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 20px 0;
+}
