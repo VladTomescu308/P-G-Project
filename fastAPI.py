@@ -1,9 +1,20 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
 from database import Identifier, get_db 
 from authdb import IdentifierCreate, IdentifierUpdate, IdentifierResponse
 
 app = FastAPI()
+
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
+
+@app.get("/app", include_in_schema=False)
+async def serve_frontend():
+    return FileResponse("frontend/index.html")
+
 
 @app.get('/')
 async def root():
