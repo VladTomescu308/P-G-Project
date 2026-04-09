@@ -8,12 +8,7 @@ from sqlalchemy import exc
 warnings.filterwarnings('ignore', category=exc.SAWarning)
 
 # --- CONEXIUNE ---
-connection_string = (
-    "Driver={ODBC Driver 17 for SQL Server};"
-    "Server=ALEX_TUTU;"
-    "Database=Proiect Practica;"
-    "Trusted_Connection=yes;"
-)
+connection_string = "Driver={ODBC Driver 17 for SQL Server};Server=DESKTOP-UR6C4GN;Database=Schita;Trusted_Connection=yes;"
 params = urllib.parse.quote_plus(connection_string)
 DATABASE_URL = f"mssql+pyodbc:///?odbc_connect={params}"
 
