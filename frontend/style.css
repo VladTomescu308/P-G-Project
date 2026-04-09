@@ -1,41 +1,42 @@
-body { 
-    font-family: Arial, sans-serif; 
-    padding: 20px; 
-    background-color: #f4f4f9; 
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f4f4f9;
 }
 
-.container { 
-    background: white; 
-    padding: 20px; 
-    border-radius: 8px; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-    max-width: 600px; 
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-button { 
-    padding: 10px 15px; 
-    background: #0056b3; 
-    color: white; 
-    border: none; 
-    border-radius: 4px; 
-    cursor: pointer; 
+button {
+    padding: 10px 15px;
+    background: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-button:hover { 
-    background: #003d82; 
+button:hover {
+    background: #003d82;
 }
 
-ul { 
-    list-style-type: none; 
-    padding: 0; 
+ul {
+    list-style-type: none;
+    padding: 0;
 }
 
-li { 
-    padding: 8px; 
-    border-bottom: 1px solid #ddd; 
+li {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
 }
 
-/* --- Stiluri Noi pentru Formular --- */
+/* --- Stiluri pentru Formular --- */
 .form-section {
     background: #fdfdfd;
     padding: 20px;
@@ -94,8 +95,13 @@ h2 {
     text-align: center;
 }
 
-.mesaj-succes { color: #28a745; }
-.mesaj-eroare { color: #dc3545; }
+.mesaj-succes { 
+    color: #28a745; 
+}
+
+.mesaj-eroare { 
+    color: #dc3545; 
+}
 
 hr {
     border: 0;
@@ -118,13 +124,13 @@ hr {
 }
 
 .tabel-date th {
-    background-color: #343a40; /* Culoare inchisa pentru antet */
+    background-color: #343a40;
     color: white;
     font-weight: bold;
 }
 
 .tabel-date tr:nth-child(even) {
-    background-color: #f2f2f2; /* Randuri alternante, exact ca in scriptul v2 */
+    background-color: #f2f2f2;
 }
 
 .tabel-date tr:hover {
