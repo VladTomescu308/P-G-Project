@@ -83,3 +83,37 @@ formAdaugare.addEventListener('submit', async (event) => {
         mesajFormular.className = "mesaj-eroare";
     }
 });
+
+// 3. Functia care aduce datele pentru Tabelul Ownership
+async function incarcaOwnership() {
+    const corpTabel = document.getElementById('corpTabelOwnership');
+    corpTabel.innerHTML = "<tr><td colspan='5' style='text-align: center;'>Se incarca datele...</td></tr>";
+    
+    try {
+        const response = await fetch('/ownership/');
+        const data = await response.json();
+        
+        corpTabel.innerHTML = "";
+        
+        if(data.length === 0) {
+            corpTabel.innerHTML = "<tr><td colspan='5' style='text-align: center;'>Nu exista inregistrari in Ownership.</td></tr>";
+        } else {
+            data.forEach(rand => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${rand.identifier_name || "-"}</strong></td>
+                    <td>${rand.originator_first_name || "-"}</td>
+                    <td>${rand.originator_last_name || "-"}</td>
+                    <td><a href="mailto:${rand.email}">${rand.email || "-"}</a></td>
+                    <td>${rand.owner_last_name || "-"}</td>
+                `;
+                corpTabel.appendChild(tr);
+            });
+        }
+    } catch (error) {
+        corpTabel.innerHTML = "<tr><td colspan='5' style='text-align: center; color: red;'>Eroare la incarcarea tabelului.</td></tr>";
+    }
+}
+
+// Apelam functia ca sa se incarce automat cand deschidem pagina
+incarcaOwnership();

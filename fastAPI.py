@@ -127,6 +127,23 @@ def get_consumers_chart(db: Session = Depends(get_db)):
     # 3. Trimitem poza direct catre browser
     return StreamingResponse(buf, media_type="image/png")
 
+@app.get("/ownership/")
+def get_ownership_stats(db: Session = Depends(get_db)):
+    # Extragem datele din tabela Ownership folosind modelul tau SQLAlchemy
+    rezultate = db.query(Ownership).all()
+    
+    date_tabel = []
+    for rand in rezultate:
+        date_tabel.append({
+            "identifier_name": rand.identifier_name,
+            "originator_first_name": rand.originator_first_name,
+            "originator_last_name": rand.originator_last_name,
+            "email": rand.email,
+            "owner_last_name": rand.owner_last_name
+        })
+        
+    return date_tabel
+
 @app.delete("/identifiers/{identifier_name}")
 def delete_full_identifier(identifier_name: str, db: Session = Depends(get_db)):
     db_item = db.query(Identifier).filter(Identifier.identifier_name == identifier_name).first()

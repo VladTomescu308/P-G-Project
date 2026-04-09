@@ -102,3 +102,31 @@ hr {
     border-top: 1px solid #eee;
     margin: 20px 0;
 }
+
+/* --- Stiluri pentru Tabelul Ownership --- */
+.tabel-date {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.tabel-date th, .tabel-date td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.tabel-date th {
+    background-color: #343a40; /* Culoare inchisa pentru antet */
+    color: white;
+    font-weight: bold;
+}
+
+.tabel-date tr:nth-child(even) {
+    background-color: #f2f2f2; /* Randuri alternante, exact ca in scriptul v2 */
+}
+
+.tabel-date tr:hover {
+    background-color: #e9ecef;
+}
