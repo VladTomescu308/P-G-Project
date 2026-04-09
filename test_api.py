@@ -17,7 +17,7 @@ engine = create_engine(
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# 3. Crearea structurii (tabelelor) în RAM pe baza modelelor din database.py
+# 3. Crearea structurii (tabelelor) in RAM pe baza modelelor din database.py
 Base.metadata.create_all(bind=engine)
 
 # 4. Functia mock care inlocuieste conexiunea reala
@@ -28,13 +28,13 @@ def override_get_db():
     finally:
         db.close()
 
-# 5. Suprascrierea dependentei globale în aplicatia FastAPI
+# 5. Suprascrierea dependentei globale in aplicatia FastAPI
 app.dependency_overrides[get_db] = override_get_db
 
 # Initializarea clientului de test
 client = TestClient(app)
 
-# --- SECȚIUNEA DE TESTE ---
+# --- SECTIUNEA DE TESTE ---
 
 def test_root():
     response = client.get("/")
@@ -66,16 +66,16 @@ def test_read_identifier():
     assert response.json()["identifier_name"] == "TEST-002"
 
 def test_read_all_identifiers():
-    # Testăm dacă ruta de get all returnează o listă (chiar și goală)
+    # Testam daca ruta de get all returneaza o lista (chiar si goala)
     response = client.get("/identifiers/")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
 def test_update_identifier_put():
-    # 1. Creăm un produs de test
+    # 1. Cream un produs de test
     client.post("/identifiers/", json={"identifier_name": "TEST-PUT", "description": "Vechi", "identifier_type": "TipVechi"})
     
-    # 2. Îl suprascriem cu PUT
+    # 2. Il suprascriem cu PUT
     response = client.put(
         "/identifiers/TEST-PUT",
         json={"identifier_name": "TEST-PUT", "description": "Nou", "identifier_type": "TipNou"}
@@ -85,10 +85,10 @@ def test_update_identifier_put():
     assert response.json()["identifier_type"] == "TipNou"
 
 def test_update_identifier_patch():
-    # 1. Creăm un produs de test
+    # 1. Cream un produs de test
     client.post("/identifiers/", json={"identifier_name": "TEST-PATCH", "description": "Descriere originala"})
     
-    # 2. Modificăm doar un singur câmp cu PATCH
+    # 2. Modificam doar un singur camp cu PATCH
     response = client.patch(
         "/identifiers/TEST-PATCH",
         json={"description": "Modificat Partial"}
@@ -97,28 +97,28 @@ def test_update_identifier_patch():
     assert response.json()["description"] == "Modificat Partial"
 
 def test_delete_identifier():
-    # 1. Creăm produsul
+    # 1. Cream produsul
     client.post("/identifiers/", json={"identifier_name": "TEST-DEL", "description": "De sters"})
     
-    # 2. Îl ștergem
+    # 2. Il stergem
     response = client.delete("/identifiers/TEST-DEL")
     assert response.status_code == 200
     assert "Succes" in response.json()["message"]
     
-    # 3. Verificăm că nu mai există (trebuie să primim eroare 404)
+    # 3. Verificam ca nu mai exista (trebuie sa primim eroare 404)
     check_response = client.get("/identifiers/TEST-DEL")
     assert check_response.status_code == 404
 
 def test_error_404_not_found():
-    # Verificăm comportamentul API-ului la cererea unui ID inexistent
+    # Verificam comportamentul API-ului la cererea unui ID inexistent
     response = client.get("/identifiers/ID-CARE-NU-EXISTA-999")
     assert response.status_code == 404
     assert response.json()["detail"] == "Identifier not found"
 
 def test_error_duplicate_identifier():
-    # Verificăm că baza de date previne duplicatele la cheia primară
+    # Verificam ca baza de date previne duplicatele la cheia primara
     client.post("/identifiers/", json={"identifier_name": "TEST-DUP"})
-    # Încercăm să îl creăm a doua oară
+    # Incercam sa il cream a doua oara
     response = client.post("/identifiers/", json={"identifier_name": "TEST-DUP"})
     assert response.status_code == 400
     assert response.json()["detail"] == "Identifier already exists"

@@ -78,7 +78,7 @@ def delete_full_identifier(identifier_name: str, db: Session = Depends(get_db)):
     db_item = db.query(Identifier).filter(Identifier.identifier_name == identifier_name).first()
     
     if not db_item:
-        raise HTTPException(status_code=404, detail="Produsul nu a fost găsit")
+        raise HTTPException(status_code=404, detail="Produsul nu a fost gasit")
 
     try:
         
@@ -97,8 +97,8 @@ def delete_full_identifier(identifier_name: str, db: Session = Depends(get_db)):
         
         db.commit()
         
-        return {"message": f"Succes! Produsul {identifier_name} și toate legăturile sale au fost șterse."}
+        return {"message": f"Succes! Produsul {identifier_name} si toate legaturile sale au fost sterse."}
 
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Eroare la ștergere: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Eroare la stergere: {str(e)}")

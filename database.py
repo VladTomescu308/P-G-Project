@@ -41,7 +41,7 @@ class ConsumerUnit(Base):
     country_name = Column(String(255), ForeignKey('Countries.name'), primary_key=True)
     country = relationship('Country', back_populates='consumer_units')
 
-# Relația inversă
+# Relatia inversa
 Country.consumer_units = relationship('ConsumerUnit', order_by=ConsumerUnit.number_of_consumers, back_populates='country')
 
 class Ownership(Base):
